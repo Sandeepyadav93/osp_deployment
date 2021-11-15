@@ -1,0 +1,50 @@
+Devstack environment for Heat development
+=========================================
+
+* Devstack Deployment Reference Doc: https://docs.openstack.org/devstack/latest/
+
+Pre steps:
+
+* Image: Devstack deployment on ubuntu 20.04 (Focal Fossa) is the most tested, and will probably go the smoothest.
+
+The most recent version of the 64-bit amd64-arch QCOW2 image for Ubuntu 20.04: 
+https://cloud-images.ubuntu.com/releases/focal/release/#:~:text=ubuntu-20.04-server-cloudimg-amd64.img
+
+* Flavor: 4 vcpu, 8 GB Ram, 60 GB disk
+
+
+Deployment steps:-
+================
+
+* Add Stack User (optional)
+https://docs.openstack.org/devstack/latest/#add-stack-user-optional
+
+* Enable additional servies if needed by updating local.conf, As I am deploying environment devstack for heat development - I have enabled heat services.
+
+Documentation: https://docs.openstack.org/heat/latest/getting_started/on_devstack.html#configure-devstack-to-enable-heat
+
+Used local.conf:-
+~~~
+stack@devstack-focal:~/devstack$ cat local.conf
+[[local|localrc]]
+ADMIN_PASSWORD=secret
+DATABASE_PASSWORD=$ADMIN_PASSWORD
+RABBIT_PASSWORD=$ADMIN_PASSWORD
+SERVICE_PASSWORD=$ADMIN_PASSWORD
+
+#Enable heat services
+enable_service h-eng h-api h-api-cfn h-api-cw
+
+#Enable heat plugin
+enable_plugin heat https://opendev.org/openstack/heat
+
+IMAGE_URL_SITE="https://download.fedoraproject.org"
+IMAGE_URL_PATH="/pub/fedora/linux/releases/35/Cloud/x86_64/images/"
+IMAGE_URL_FILE="Fedora-Cloud-Base-35-1.2.x86_64.qcow2"
+IMAGE_URLS+=","$IMAGE_URL_SITE$IMAGE_URL_PATH$IMAGE_URL_FILE
+~~~
+
+
+Start the install
+=================
+./stack.sh
